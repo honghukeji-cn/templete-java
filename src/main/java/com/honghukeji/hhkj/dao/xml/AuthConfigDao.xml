@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honghukeji.hhkj.dao.AuthConfigDao">
+
+    <resultMap type="com.honghukeji.hhkj.entity.AuthConfig" id="AuthConfigMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="pwd_reg" column="pwd_reg" jdbcType="VARCHAR"/>
+        <result property="fail_num" column="fail_num" jdbcType="INTEGER"/>
+        <result property="pwd_reg_desc" column="pwd_reg_desc" jdbcType="VARCHAR"/>
+        <result property="timeout" column="timeout" jdbcType="INTEGER"/>
+        <result property="pass_max" column="pass_max" jdbcType="INTEGER"/>
+        <result property="pass_wran" column="pass_wran" jdbcType="INTEGER"/>
+        <result property="atime" column="atime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+
+
+</mapper>
+

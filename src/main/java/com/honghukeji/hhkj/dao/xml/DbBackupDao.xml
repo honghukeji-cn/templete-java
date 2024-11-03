@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honghukeji.hhkj.dao.DbBackupDao">
+
+    <resultMap type="com.honghukeji.hhkj.entity.DbBackup" id="DbBackupMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="file_name" column="file_name" jdbcType="VARCHAR"/>
+        <result property="admin_id" column="admin_id" jdbcType="INTEGER"/>
+        <result property="file_path" column="download_num" jdbcType="VARCHAR"/>
+        <result property="atime" column="atime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <select id="getList" resultType="com.honghukeji.hhkj.controllers.admin.backup.vo.DbBackupVo">
+        select a.*,ifnull(b.username,"-") as admin_name from hhkj_db_backup as a
+        left join hhkj_admin as b on a.admin_id=b.admin_id
+        <where>
+            <if test="stime!=null and stime!=''">
+                and a.atime between #{stime} and #{etime}
+            </if>
+            <if test="admin_id!=null and admin_id>0">
+                and a.admin_id=#{admin_id}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>
+

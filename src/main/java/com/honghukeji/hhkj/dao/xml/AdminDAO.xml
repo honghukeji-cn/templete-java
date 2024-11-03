@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.honghukeji.hhkj.dao.AdminDAO">
+
+    <select id="findByUsername" resultType="com.honghukeji.hhkj.entity.Admin">
+        select * from hhkj_admin where username=#{username} limit 1
+    </select>
+    <select id="getAdminList" resultType="com.honghukeji.hhkj.controllers.admin.admin.vo.AdminListVo">
+        select a.*,b.role_name
+        from   hhkj_admin as a
+        inner join hhkj_role as b on a.role_id=b.role_id
+        <where>
+            <if test="username!=null and username!=''">
+                and a.username like concat('%',#{username},'%')
+            </if>
+            <if test="role_id>0">
+                and a.role_id=#{role_id}
+            </if>
+        </where>
+    </select>
+    <select id="getAdminLog" resultType="com.honghukeji.hhkj.controllers.admin.admin.vo.AdminLogVo">
+        select
+        a.desc,a.ip,a.address,b.username,a.atime
+        from
+        hhkj_admin_log as a
+        inner join hhkj_admin as b on a.admin_id=b.admin_id
+        <where>
+            <if test="admin_id>0">
+                and a.admin_id=#{admin_id}
+            </if>
+            <if test="desc!=null and desc!=''">
+                and a.desc like concat('%',#{desc},'%')
+            </if>
+            <if test="address!=null and address!=''">
+                and a.address like concat('%',#{address},'%')
+            </if>
+            <if test="ip!=null and ip!=''">
+                and a.ip like concat('%',#{ip},'%')
+            </if>
+        </where>
+    </select>
+    <select id="getSearchAdminList" resultType="com.honghukeji.hhkj.objs.SelectVo">
+        select admin_id as value,username as label from hhkj_admin
+    </select>
+</mapper>

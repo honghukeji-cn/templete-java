@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.honghukeji.hhkj.dao.UploadFilesDAO">
+
+
+    <select id="selectByPid" resultType="com.honghukeji.hhkj.controllers.admin.setting.vo.GetFileListVo">
+        select id,url,name,type from hhkj_upload_files
+        <where>
+            <if test="pid!=null">
+                and pid=#{pid}
+            </if>
+            <if test="name!=null and name!=''">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="type!=null and type>0">
+                and (type=#{type} or type=8)
+            </if>
+        </where>
+    </select>
+    <select id="getImgList" resultType="com.honghukeji.hhkj.controllers.admin.setting.vo.UploadLog">
+        select id,type as file_type, domain  as type,name as file_name,url,atime from hhkj_upload_files where type=1
+    </select>
+</mapper>

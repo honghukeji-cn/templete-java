@@ -16,6 +16,13 @@ import com.honghukeji.hhkj.objs.AliOssEntity;
 import com.honghukeji.hhkj.objs.JSONResult;
 import com.honghukeji.hhkj.objs.QiniuEntity;
 import com.honghukeji.hhkj.objs.TxCosEntity;
+import lombok.SneakyThrows;
+import org.apache.pdfbox.io.RandomAccessBuffer;
+import org.apache.pdfbox.pdfparser.PDFParser;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,14 +31,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 public class UploadController extends BaseController{
@@ -44,17 +48,36 @@ public class UploadController extends BaseController{
         if(file.isEmpty()){
             return JSONResult.error("请上传文件");
         }
+        String originalFilename=file.getOriginalFilename();
+        String[] arr=originalFilename.split("\\.");
+        String extName=arr[arr.length -1].toLowerCase(Locale.ROOT);
+        String[] allowFiles=new String[]{"zip","doc","docx","rar","png","jpeg","jpg","xls","xlsx","pdf","mp4","avi","flv"};
+        if(!Arrays.asList(allowFiles).contains(extName))
+        {
+            return JSONResult.error("不支持上传此类文件:"+extName);
+        }
         String filename=checkFile(file.getOriginalFilename());
+        if(extName.equals("pdf"))
+        {
+            try {
+                PDDocument document = PDDocument.load(file.getInputStream());
+                PDFTextStripper pdfStripper = new PDFTextStripper();
+                pdfStripper.getText(document);
+            } catch (IOException e) {
+                throw new ErrorException("PDF文档疑似存在XSS攻击脚本!禁止上传!");
+            }
+
+        }
         try {
             byte[] bytes=file.getBytes();
             File filepath=new File(uploadPath);
             if(!filepath.exists()){
                 filepath.mkdir();
-
             }
             Path path= Paths.get(uploadPath+filename);
             Files.write(path,bytes);
         }catch (IOException e){
+            e.printStackTrace();
             return  JSONResult.error(e.getMessage());
         }
         Map json=new HashMap();

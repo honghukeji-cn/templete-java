@@ -29,9 +29,13 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -313,5 +317,16 @@ public class Helper {
     public static Double DoubleToFixed(Double aDouble, String pattern) {
         DecimalFormat df = new DecimalFormat(pattern);
         return Double.valueOf(df.format(aDouble));
+    }
+
+    public static File multipartFileToFile(MultipartFile multipartFile) throws IOException {
+        // 获取文件名
+        String fileName = multipartFile.getOriginalFilename();
+        // 创建临时文件
+        Path path = Paths.get(fileName);
+        File tempFile = path.toFile();
+        // 将MultipartFile内容写入临时文件
+        multipartFile.transferTo(tempFile);
+        return tempFile;
     }
 }

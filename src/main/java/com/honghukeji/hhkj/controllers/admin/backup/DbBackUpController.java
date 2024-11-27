@@ -1,5 +1,6 @@
 package com.honghukeji.hhkj.controllers.admin.backup;
 
+import com.honghukeji.hhkj.annotation.CheckToken;
 import com.honghukeji.hhkj.controllers.BaseController;
 import com.honghukeji.hhkj.controllers.admin.backup.dto.DbBackUpListDto;
 import com.honghukeji.hhkj.controllers.admin.backup.vo.DbBackupVo;
@@ -22,6 +23,7 @@ import java.io.FileNotFoundException;
 
 @RequestMapping("/admin/backup")
 @RestController
+@CheckToken
 public class DbBackUpController extends BaseController {
     //备份
     @RequestMapping("/backUpDb")
@@ -45,8 +47,8 @@ public class DbBackUpController extends BaseController {
         return JSONResult.success(pageVo);
     }
     //下载
-    @GetMapping("/download/{id}")
-    public InputStreamSource ceshi2(@PathVariable Integer id, HttpServletResponse response) throws FileNotFoundException {
+    @PostMapping("/download/{id}")
+    public InputStreamSource download(@PathVariable Integer id, HttpServletResponse response) throws FileNotFoundException {
         DbBackup backup= dbBackupService.getById(id);
         if(backup==null)
         {

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +29,14 @@ import java.util.List;
 @RequestMapping("/admin/admin")
 @CheckToken
 public class AdminController extends BaseController {
+    @RequestMapping("/loginOut")
+    public JSONResult<EmptyVo> loginOut(HttpServletRequest request)
+    {
+        Admin admin= LocalAdmin.get();
+        String redisKey="adminToken_"+admin.getAdmin_id();
+        redis.delete(redisKey);
+        return JSONResult.success();
+    }
     /**
      * 获取登录页面基本信息
      * @return
